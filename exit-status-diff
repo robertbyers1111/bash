@@ -1,0 +1,53 @@
+#!/bin/sh
+
+#====================================================================
+#DEMO: "exit-status-diff"
+#
+# Demo of how to test whether two files are identical and
+# take different actions based on the test result.
+
+#====================================================================
+#SUBROUTINE: "dodiff()" - does the actual testing
+
+dodiff()
+{
+  if diff $1 $2 > /dev/null ; then
+    echo $1 and $2 are identical \(diff status = TRUE\)
+  else
+    echo $1 and $2 differ! \(diff status = FALSE\)
+  fi
+}
+
+#====================================================================
+#	* * *   M A I N   S C R I P T   * * *
+
+#First, create some temp files for the testing ...
+
+cat <<EOF1 > /tmp/abc1
+abc
+EOF1
+
+cat <<EOF2 > /tmp/abc2
+abc
+EOF2
+
+cat <<EOF3 > /tmp/xyz
+xyz
+EOF3
+
+#Now do the testing ...
+
+dodiff /tmp/abc1 /tmp/abc2
+dodiff /tmp/abc1 /tmp/xyz
+
+#====================================================================
+#	* * *   M A I N   S C R I P T   * * *
+#
+# (latest version, 2016-0906)
+#
+# NOTE: cmp is better than diff for simply deciding if two files differ
+#
+
+if cmp -s file1 file2; then
+   echo Files not changed.
+fi

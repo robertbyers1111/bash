@@ -1,0 +1,24 @@
+#!/bin/sh
+
+echo ===========================================
+echo BEFORE:
+echo ""
+for X in `ls -l|head -3` ; do
+	echo line: $X
+done
+
+IFS=$'\n'
+
+echo ===========================================
+echo AFTER:
+echo ""
+for X in `ls -l|head -3` ; do
+	echo line: $X
+done
+
+# Another example (7-jul-2014)
+# 
+# IFS=$'\n'
+# for X in `vncserver -list` ; do
+#   echo $X
+# done

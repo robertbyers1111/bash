@@ -1,0 +1,100 @@
+#   +---------+
+#---| Windows |-----------------------------------------------------------------
+#   +---------+
+
+# rem NOTE: Varnames limit of 1 char length (!)
+
+    rem ----------------------------
+    rem From inside a .bat file
+    rem ----------------------------
+
+        for /r . %%A in ("*.*") do (
+          echo "ABC-%%A"
+        )
+
+    rem ----------------------------
+    rem From command line
+    rem ----------------------------
+
+        rem -- for only files in this directory..
+
+        for %A in ("*.*") do (
+          echo "ABC-%A"
+        )
+
+       rem -- for recursing into directories..
+
+        for /r . %A in ("*.*") do (
+          echo "XYZ-%A"
+        )
+
+    rem ----------------------------
+    rem Process output of a command
+    rem ----------------------------
+
+        set Q=%1
+        for /F %%A in ( 'basename %Q%' ) do set ABC=%%A
+
+
+#   +-------+
+#---| Linux |-------------------------------------------------------------------
+#   +-------+
+
+#-- CHECK ENVIRONMENT VARIABLES
+
+    SEARCH=abc-def
+
+    ABC=XX.abc-def.XX
+    DEF=XX.ABC-DEF.XX
+
+    for VAR in $ABC $DEF ; do
+        if echo $VAR | grep abc-def > /dev/null ; then
+            echo "YES: '$VAR' contains         '$SEARCH'"
+        else
+            echo " NO: '$VAR' does not contain '$SEARCH'"
+        fi
+    done
+
+#-- PROCESS ITEMS FROM A LIST
+
+    LIST="abc def 123"
+    for VAR in $LIST
+    do
+        echo Processing $VAR
+    done
+
+#-- LOOP THROUGH LINES FROM A PIPE
+
+    cat /etc/shells | while read line
+     do
+        echo LINE: $line
+     done
+
+#-- LOOP A FIXED NUMBER OF TIMES
+
+    for octet4 in {0..255}
+    do
+        echo 192.168.0.$octet4
+    done
+
+#-- PROCESS FILES AND/OR DIRECTORIES
+
+    for VAR in /var/spool/*
+    do
+       echo Found $VAR
+    done
+
+#-- LOOP THROUGH A FILE
+
+    while read line; do
+        echo LINE: $line
+    done < /etc/hosts
+
+#-------------------------------------------------------------------------------
+
+    for XXX in *.zip ; do echo XXX:$XXX; done
+
+#-------------------------------------------------------------------------------
+
+vi /home/rbyers/public_html/sh/for_viaCmdLine_linuxAndWindows.txt
+

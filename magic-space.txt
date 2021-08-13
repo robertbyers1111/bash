@@ -1,0 +1,43 @@
+I’ve been reading some cool stuff about Bash lately. Hopefully, they are useful to you, too. This post really combines things from this page and this page.
+I run the following command:
+ $ l sizer svg2png.py mypdf.pdf   
+-rw-r--r-- 1 hostetlerm mkgroup-l-d 219975 Mar  8 16:38 mypdf.pdf
+-rwxr-xr-x 1 hostetlerm mkgroup-l-d   2927 May 18 09:27 sizer
+-rwx------ 1 hostetlerm mkgroup-l-d    381 May 18 09:27 svg2png.py
+Huh? What’s sizer? I want to run file on it to figure it out. Since it’s the first argument, I can just do this:
+ $ file !^
+And it puts the first argument in:
+ file sizer
+sizer: ASCII English text
+
+Why !^? It sorta makes sense — Bash uses ! to control and ^ is the beginning of the line in regular expressions.
+To get the last argument, you would use !$, which makes sense for the same reasons.
+But I will probably never remember the ^ and $, but luckily I can do numbers as well:
+ $ file !:1
+file sizer
+sizer: ASCII English text
+So !:1 is the first argument. It follows that !:2 is the second, etc.
+If you just want all the arguments, just use !*:
+ $ l sizer svg2png.py mypdf.pdf 
+-rw-r--r-- 1 hostetlerm mkgroup-l-d 219975 Mar  8 16:38 mypdf.pdf
+-rwxr-xr-x 1 hostetlerm mkgroup-l-d   2927 May 18 09:27 sizer
+-rwx------ 1 hostetlerm mkgroup-l-d    381 May 18 09:27 svg2png.py
+
+$ file !*
+file sizer svg2png.py mypdf.pdf
+sizer:      ASCII English text
+svg2png.py: a python\015 script text executable
+mypdf.pdf:  PDF document, version 1.3
+
+Now if this isn’t cool enough, I put this in my $HOME/.inputrc:
+ $if Bash
+  Space: magic-space
+$endif
+$HOME/.inputrc your configuration file for the Readline library, which Bash and scads of other Unix tools uses. Read more about inputrc — there is a ton of hacking potential there. If you don’t want to log out and log back in, you can hit ^C^R to re-read the inputrc file.
+What does this magic-space do? Well, it’s magic. Now I can type this, leaving my cursor at the very end:
+ $ file !*_
+And when I hit <space>, !* is replaced with the proper values!
+ file sizer svg2png.py mypdf.pdf _
+See? I told you it was magic!
+Thus ends our lesson for today. Calling back previous arguments with simple commands is simply ingenious and I have to admit, the magic space surprised a little. But it’s all very, very cool.
+

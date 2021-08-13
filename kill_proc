@@ -1,0 +1,39 @@
+#!/bin/sh
+
+#==========================================
+kill_topst()
+{
+ for TOPST in `ps -ef|grep topst|grep -v grep|grep $USER|awk -F' ' '{print $2}'`
+ do
+ 	echo Killing topst, pid=${TOPST}
+	kill $TOPST > /dev/null 2>&1
+ done
+
+}
+
+#==========================================
+CHKENV()
+{
+ NAME=$1
+ NAME_EVAL=`eval echo $"$1"`
+ if [ "$NAME_EVAL"xxx = xxx ]; then
+	echo variable $NAME is not set
+	exit 1
+ fi
+}
+
+#==========================================
+#Main script
+
+CHKENV LNMSHOME
+CHKENV USER
+
+kill_topst
+exit 1
+
+cd ${LNMSHOME}/db
+ls -FLal
+$LNMSHOME/bin/autotopmgr_script -kud
+\rm -rf ${USER}.db root.db *.log *.taf 
+$LNMSHOME/bin/autotopmgr_script -kud
+ls -Flal

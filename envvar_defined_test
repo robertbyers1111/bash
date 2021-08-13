@@ -1,0 +1,59 @@
+#!/bin/sh
+#
+#======================================================
+#BOB'S PREFERRED TECHNIQUE
+#
+
+CHKENV()
+{
+ NAME=$1
+ NAME_EVAL=`eval echo $"$1"`
+ if [ "$NAME_EVAL"nil = nil ]; then
+  echo variable $NAME is not set
+  exit 1
+ fi
+}
+
+#==========================================================
+#TECHNIQUE FROM A BOOK
+#
+# From UNIX Shell Programming, by Arthur & Burns, p.120
+# Works, but needs to be repackaged into a procedure.
+#
+# Sets a default value if variable is not set or is null
+#
+#	${OUTFILE:=NOT_SET}
+
+CHKENV2()
+{
+ NAME=$1
+ echo `eval echo $NAME zzz`
+ ${`eval echo $NAME`:=NOT_SET}
+}
+
+#==========================================================
+#TECHNIQUE FROM USENET
+#
+# From comp.unix.shell newsgroup
+#
+#NOTE: Some comp.unix.shell posters say do a "man test"
+#See Rich Kus's reply to "Bourne shell question", 1997/07/12
+#
+CHKENV3()
+{
+ NAME=$1
+ VAL=`eval echo $"$1"`
+ 
+ case ${VAL-ABC}${VAL-DEF} in
+    ABCDEF)	echo variable $NAME is not set ; exit 1;;
+	'')	echo variable $NAME is empty ; exit 1;;
+ esac
+}
+
+#==========================================================
+#	* * *   M A I N   S C R I P T   * * *
+
+CHKENV PATH
+CHKENV MANPATH
+CHKENV NADANADA
+CHKENV NADA

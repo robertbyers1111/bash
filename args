@@ -1,0 +1,91 @@
+#!/bin/sh
+
+#================================================================
+# Bourne Shell Command Line Arguments
+#
+#       $#      Number of command line args entered by the user
+#       $1      The first arg
+#       $2      The second arg
+#       ${!#}   The value of the last arg
+#       $*      All arguments together
+#
+#================================================================
+
+#---------------------------------------------
+# SEE ALSO: procArgs for passing args to procs
+#---------------------------------------------
+
+#   +---------------+
+#---| EAT ARGS DEMO |---
+#   +---------------+
+
+MODIFY_SWCFG=0
+DEVEL=0
+SCRIPT=DEFAULT
+
+echo "Eating $# arguments..."
+
+COUNT=0
+while [ $# -gt 0 ]
+do
+  COUNT=`expr $COUNT + 1`
+  echo "Argument $COUNT is: \"$1\"	There are `expr $# - 1` remaining"
+  case $1 in
+    -P)  echo "Forcing switch config"
+         MODIFY_SWCFG=1
+         ;;
+    -d)  echo "This is a DEVEL build"
+         DEVEL=1
+         ;;
+    -s)  echo "Override script name"
+         SCRIPT=$2
+         shift
+         ;;
+    *)   echo "     unsupported ('$1')"
+         ;;
+  esac
+  shift
+done
+
+echo ""
+echo MODIFY_SWCFG:$MODIFY_SWCFG
+echo DEVEL:$DEVEL
+echo SCRIPT:$SCRIPT
+
+#   +------------------------+
+#---| LATEST DEMO (may 2010) |---
+#   +------------------------+
+
+    if [ $# -ne 2 ]; then
+      echo "USAGE: `basename $0` <input filename> <output filename>"
+      exit
+    fi
+
+    if [ ! -f $1 ]; then
+      echo Input file $1 does not exist
+      exit
+    fi
+
+#   +-------------------------+
+#---| ANOTHER DEMO (may 2014) |---
+#   +-------------------------+
+
+    if (($#<1)); then
+      echo "    USAGE: `basename $0` file.."
+      exit
+    fi
+
+    doargs ()
+    {
+      while [ $# -ge 1 ]; do
+        if [ ! -f "$1" ]; then
+          echo "  WTF: '$1' NOT EXIST"
+        else
+          printf "   %5d %5d %5d %5d   %s\n" `sum -r "$1"` `sum -s "$1"`
+        fi
+        shift
+      done
+    }
+
+    doargs $@ | sort -n
+

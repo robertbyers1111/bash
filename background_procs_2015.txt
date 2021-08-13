@@ -1,0 +1,108 @@
+
+#   +----------------------------------------------------------------+
+#---| Task 4 : Start a process, log off and have the process running |---
+#   +----------------------------------------------------------------+
+
+As a simple example, assume that you have a Linux command named
+myLongRunningJob.sh that you want to run, but you know if will take over
+three hours to run and you have to log off now, how can you do it ?
+
+
+
+      nohup myLongRunningJob.sh > bklog.txt 2>&1 &
+
+
+
+If standard input is a terminal, redirect it from /dev/null. If standard
+output is a terminal, append output to `nohup.out' if possible,
+`$HOME/nohup.out' otherwise. If standard error is a terminal,
+redirect it to standard output. To save output to FILE, use `nohup
+COMMAND > FILE'.
+
+So we'll find the output of our command in the file nohup.out.
+
+Note:By itself, nohup does not run tasks in background, you must provide
+the character & at the end of the command line or use the CTRL-Z and put
+the tasks in background with the command bg.
+
+
+
+
+
+#   +--------------------+
+#---| IMPORTANT COMMENTS |---
+#   +--------------------+
+
+
+Sergei says:
+
+    Oh, never heard about $ disown before, i always use $ screen to keep processes
+    running or run it on startup if it need a terminal like some kind of video
+    players. Thank you.
+
+Lawrence D'Oliveiro says:
+
+    Use setsid instead of nohup.
+
+Duncan says:
+
+    @ Lawrence: I'd never heard of setsid before. It looks to be perfect when one
+    doesn't care about STDIN/STDOUT, but needs to launch something from a script
+    that should then terminate without affecting the launched program (as is often
+    the case when launching an X based program).
+
+    @ Linuxaria: After using &; disown for some time, I had been experimenting with
+    nohup, but was having problems with it. Your comment that the & is still needed
+    prompted me to discover why. (I had been using it, but after the redirect and
+    apparently I needed it before the redirect.)
+
+    Between the two tips, one in the OP one in the comments, this has just solved a
+    serious frustration I've been working to solve on and off for months!  =:^)
+
+Sanders says:
+
+    Also the 'at' command is an alternative to run things on the background.
+
+k says:
+
+    disown! nice tip, been wondering about that
+
+    (very good for e.g. when you've started a huge sort without nohup/screen,
+    and then find you have to log off from your ssh session)
+
+
+
+
+
+#   +------------------------------------------------------------------------------------+
+#---| Task 5 : Log off from a terminal keeping active a process we started without nohup |---
+#   +------------------------------------------------------------------------------------+
+
+You have to log off from the terminal, but you are in the middle of that
+long task what to do ?
+
+mylongtask.sh ; < ctrl > Z; bg; disown -h %1
+
+After we put on background the process, disown it from the current
+terminal. The disown prevents a SIGHUP to the process if my terminal
+dies.
+
+from the man page ...
+
+      disown [-ar] [-h] [jobspec ...]
+
+Without options, each jobspec is removed from the table of active jobs.
+If the -h option is given, each jobspec is not removed from the table,
+but is marked so that SIGHUP is not sent to the job if the shell
+receives a SIGHUP. If no jobspec is present, and neither the -a nor the
+-r option is supplied, the current job is used. If no jobspec is
+supplied, the -a option means to remove or mark all jobs; the -r option
+without a jobspec argument restricts operation to running jobs. The
+return value is 0 unless a jobspec does not specify a valid job.
+
+Of course, in the X Windows environment, all these unnatural gyrations are not
+necessary. Just start another shell window and run the other command there. You
+can watch both processes running in separate windows at the same time, and you
+don't have to w orry about adding ampersands, piping output to files, or
+keeping track of foreground versus background processes.
+

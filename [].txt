@@ -1,0 +1,143 @@
+#!/bin/bash
+
+#zz# #-------------------------------------------------------------------------------
+#zz# 
+#zz# From
+#zz# http://www.tldp.org/LDP/abs/html/testconstructs.html
+#zz# 
+#zz# An if/then construct tests whether the exit status of a list of commands is 0
+#zz# (since 0 means "success" by UNIX convention), and if so, executes one or more
+#zz# commands.
+#zz# 
+#zz# SINGLE BRACKETS [...]
+#zz# 
+#zz# There exists a dedicated command called [ (left bracket special character). It
+#zz# is a synonym for test, and a builtin for efficiency reasons. This command
+#zz# considers its arguments as comparison expressions or file tests and returns an
+#zz# exit status corresponding to the result of the comparison (0 for true, 1 for
+#zz# false).
+#zz# 
+#zz# DOUBLE BRACKETS [[...]]
+#zz# 
+#zz# With version 2.02, Bash introduced the [[ ... ]] extended test command, which
+#zz# performs comparisons in a manner more familiar to programmers from other
+#zz# languages. Note that [[ is a keyword, not a command.
+#zz# 
+#zz# Bash sees [[ $a -lt $b ]] as a single element, which returns an exit status.
+#zz# 
+#zz# DOUBLE PARENTHESIS ((...))
+#zz# 
+#zz# The (( ... )) and let ... constructs return an exit status, according to
+#zz# whether the arithmetic expressions they evaluate expand to a non-zero value.
+#zz# These arithmetic-expansion constructs may therefore be used to perform
+#zz# arithmetic comparisons.
+#zz# 
+#zz# #-------------------------------------------------------------------------------
+#zz# 
+#zz# From
+#zz# http://www.tldp.org/LDP/abs/html/comparison-ops.html
+#zz# 
+#zz# The == comparison operator behaves differently within a double-brackets test than within single brackets.
+#zz# 
+#zz# Compare these:
+#zz# 
+#zz# [[ $a == z* ]]   # True if $a starts with an "z" (pattern matching).
+#zz# [[ $a == "z*" ]] # True if $a is equal to z* (literal matching).
+#zz# 
+#zz# .. to these:
+#zz# 
+#zz# [ $a == z* ]     # File globbing and word splitting take place.
+#zz# [ "$a" == "z*" ] # True if $a is equal to z* (literal matching).
+#zz#
+#zz# +------------------------------------------------+
+#zz# | WHY '[ $VALUE ]' DOESN'T WORK THE WAY I WANT.. |
+#zz# +------------------------------------------------+
+#zz# 
+#zz# test and [ evaluate conditional expressions using a set of rules based on the number of arguments..
+#zz# 
+#zz# 0 arguments   The expression is false.
+#zz#
+#zz# 1 argument    The expression is true if and only if the argument is not null. <=============== !!!!
+#zz# 
+#zz# 2 arguments
+#zz#        If the first argument is !, the expression is true if and only if the second argument is null.  If the first argument is
+#zz#        one  of  the unary conditional operators listed above under CONDITIONAL EXPRESSIONS, the expression is true if the unary
+#zz#        test is true.  If the first argument is not a valid unary conditional operator, the expression is false.
+#zz# 
+#zz# 3 arguments
+#zz#        The following conditions are applied in the order listed.  If the second argument is one of the binary conditional oper‐
+#zz#        ators  listed  above  under CONDITIONAL EXPRESSIONS, the result of the expression is the result of the binary test using
+#zz#        the first and third arguments as operands.  The -a and -o operators are considered binary operators when there are three
+#zz#        arguments.   If  the  first argument is !, the value is the negation of the two-argument test using the second and third
+#zz#        arguments.  If the first argument is exactly ( and the third argument is exactly ), the result is the one-argument  test
+#zz#        of the second argument.  Otherwise, the expression is false.
+#zz# 
+#zz# 4 arguments
+#zz#        If  the first argument is !, the result is the negation of the three-argument expression composed of the remaining argu‐
+#zz#        ments.  Otherwise, the expression is parsed and evaluated according to precedence using the rules listed above.
+#zz# 
+#zz# 5 or more arguments
+#zz#        The expression is parsed and evaluated according to precedence using the rules listed above.
+#zz# 
+#zz# When used with test or [, the < and > operators sort lexicographically using ASCII ordering.
+
+. /home/bbyers/lib/bbyerslib.sh ; touch $TMPF
+
+    #-- two very simple examples
+
+        #-- Example 1
+
+	[ $# -gt 0 ] && echo $1
+
+        #-- Example 2
+
+	[ -f $TMPF ] && rm $TMPF
+
+    #-- exit in curly braces exits the script - don't forget all semicolons
+
+        #-- Example 1
+
+	[ $# -ne 1 ] && { echo USAGE: `basename $0` file; exit; }
+
+        #-- Example 2
+
+	[ ! -f $1 ] && { echo $1 NOT EXIST; exit; }
+
+        #-- Example 3
+
+        [ $# -ne 1 ] || [ ! -f $1 ] && {
+         echo Either incorrect number of cmd arguments, or file not exist;
+         echo USAGE: `basename $0` FILE;
+         exit;
+        }
+
+        #-- Example 4
+
+        [ $# -eq 1 ] && [ -f $1 ] && {
+         echo OK $1 is a file that exists
+        } || {
+         echo bummer
+         exit
+        }
+
+    #-- !!! NOTES !!!
+    #--
+    #-- exit in curly braces exits the script - but don't forget all semicolons
+    #-- exit in parentheses only exits the block not the script
+
+	[ $# -gt 0 ] && (
+	  echo one:$1
+	  echo two:$2
+          #(this only exits the parentheses)
+          exit
+	)
+
+    #-- [] Doesn't support unary operators, but when 1 arg is passed it
+    #-- checks if it is null. Hence we can *sort of* do a unary test..
+
+        tty -s; [[ $? -eq 0 ]] && VERBOSE=1 || VERBOSE=
+       [ $VERBOSE ] && echo Not in cron || echo in cron
+
+    #-- SIMPLEST
+
+	[ ! -f $1 ] && { echo $1 NOT EXIST; exit; }

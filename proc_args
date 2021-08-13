@@ -1,0 +1,23 @@
+#!/bin/sh
+
+#------------------------------------------------------------------------
+# NOTES:
+#
+# doit sees $1 $2 from its call only - NOT from shell command line (!)
+#
+# doit DOES see all environ vars (!)
+#
+# main DOES see any environ var set inside doit (!)
+#------------------------------------------------------------------------
+
+doit () 
+{
+  DEF=xyz
+  echo IN DOIT, d1:$1 d2:$2 ABC:$ABC DEF:$DEF
+}
+
+ABC=abc
+
+echo IN MAIN, d1:$1 d2:$2 ABC:$ABC DEF:$DEF
+doit $ABC
+echo IN MAIN, d1:$1 d2:$2 ABC:$ABC DEF:$DEF

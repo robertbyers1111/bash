@@ -1,0 +1,45 @@
+#!/bin/ksh
+
+echo ===========================================
+echo BEFORE:
+echo ""
+for X in `ls -l|head -5` ; do
+	echo X= $X
+done
+
+#===============================================
+IFS="
+"
+
+echo ===========================================
+echo AFTER:
+echo ""
+for X in `ls -l|head -5` ; do
+	echo X= $X
+done
+
+########################################################################
+#In article <6ljqnv$lvc$1@heliodor.xara.net>,
+#Clyde Ingram <clydei@edssi.globalnet.co.uk> wrote:
+#>
+#>Andreas Demand wrote in message <357D4436.2DAAEB66@stuttgart.de>...
+#>>hello,
+#>>
+#>>does someone knows a possibility to put hexadecimal values in variables
+#>>in a kornshell?
+#>>
+#>>For example: I want to put x'09' (NewLine) in the variable IFS.
+#>
+#>
+#>You could put octal values in easily using 'print' and 'tr'.  For example:
+#>    IFS=$( print "A"| tr 'A' '\012' )
+#>    print "abc${IFS}def"
+#>    abc
+#>    def
+#
+#I think the more modern shells will have a way to do this directly, but
+#failing that, printf is your friend.
+#
+#IFS=$(printf '\009')
+#
+#Note that it doesn't do hex (yet!), only octal.

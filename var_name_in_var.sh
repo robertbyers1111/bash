@@ -1,0 +1,14 @@
+#!/bin/bash
+
+VAR_NAME_TO_CHECK="HOME"
+
+echo Name to check: $VAR_NAME_TO_CHECK
+
+# MUST BE EXACTLY LIKE THIS
+
+eval VAL_TO_CHECK=\$$VAR_NAME_TO_CHECK
+
+echo Value is: $VAL_TO_CHECK
+
+# THIS IS BOGUS. DO NOT TRY THIS.
+# echo VAL: `eval \$$VAR_NAME_TO_CHECK`

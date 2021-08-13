@@ -1,0 +1,7 @@
+#!/bin/sh
+if [ "`/usr/xpg4/bin/id -u`" = "0" ]
+then
+	echo you are root
+else
+	echo you are NOT root
+fi

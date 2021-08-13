@@ -1,0 +1,10 @@
+#!/bin/sh
+
+DRIVER=${1:-"/dev/tcp"}
+
+echo Using $DRIVER
+
+for parm in `ndd $DRIVER \? | egrep -v '^\?|^tcp_status |^tcp_.*_hash |^ip_.*_status ' | awk -F'(' '{ print $1 }'`
+do
+	echo "== $parm = `ndd $DRIVER $parm`"
+done

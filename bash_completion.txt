@@ -1,0 +1,33 @@
+
+Location of completion stuff..
+
+    /etc/bash_completion.d
+    /usr/share/doc/bash-completion-1.3
+    /usr/share/bash-completion
+    /usr/share/bash-completion/completions
+
+These completions FAIL (on RB-EL6)...
+
+    cd /usr/bin
+    ./zipinfo r*2^C
+
+These completions work (on RB-EL6)...
+
+    ./zsoelim rpmdev-sha512 ^C
+    ./znew rpmdev-sha512 ^C
+    ./zmore rpmdev-sha512 ^C
+    ./zless rpmdev-sha512 ^C
+    ./zipsplit rpmdev-sha512 ^C
+    ./zipnote rpmdev-sha512 ^C
+    ./zipgrep rpmdev-sha512 ^C
+    ./zipcloak rpmdev-sha512 ^C
+    ./zip rpmdev-sha512 ^C
+    ./zgrep rpmdev-sha512 ^C
+    ./zforce rpmdev-sha512 ^C
+    ./zfgrep rpmdev-sha512 ^C
+    ./zenity rpmdev-sha512 ^C
+    ./zeisstopnm rpmdev-sha512 ^C
+    ./zegrep rpmdev-sha512 ^C
+    ./zdiff rpmdev-sha512 ^C
+    ./zcmp rpmdev-sha512 ^C
+    

@@ -1,0 +1,81 @@
+
+Use 'declare' to..
+
+[A] make a variable readonly
+[B] force a variable to integer
+[C] declare a variable as an array
+
+*B: but doesn't fail if non-integer is set
+*C: but variables don't need to be declared as an array
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The Bash declare Statement
+Apr 21, 2009  By Mitch Frazier	
+
+Although rarely used, the bash declare statement does have a couple
+useful options. It can mark a variable as read only and also mark it as
+being a number only.
+
+To declare a variable as read only, use the following statement:
+
+declare -r varname
+
+Consider the following script:
+
+#!/bin/bash
+
+a=13
+declare -r a
+echo $a
+a=14
+echo $a
+
+When run, the second assignment will fail:
+
+$ sh decl.sh
+13
+decl.sh: line 6: a: readonly variable
+
+To declare that a variable should accept only numeric values (integers),
+use the following statement:
+
+declare -i varname
+
+Consider the following script:
+
+#!/bin/bash
+
+declare -i a
+a=12
+echo $a
+a=hello
+echo $a
+
+When run, the second assignment will assign zero to the variable rather
+than the string "hello" that appears in the statement:
+
+$ sh decl2.sh
+12
+0
+
+The declare statment has other options; the -a option can be used to
+declare a variable as an array, but it's not necessary. All variables
+can be used as arrays without explicit definition. As a matter of fact,
+it appears that in a sense, all variables are arrays, and that
+assignment without a subscript is the same as assigning to "[0]".
+Consider the following script:
+
+#!/bin/bash
+
+a=12
+echo ${a[0]}
+b[0]=13
+echo $b
+
+When run it produces:
+
+$ sh arr.sh
+12
+13
+

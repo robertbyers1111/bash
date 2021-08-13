@@ -1,0 +1,23 @@
+#!/bin/sh
+#========================================================
+#
+#DEMO: "Subroutines" in UNIX Bourne Shell Scripts
+#
+# NOTE: Subroutine lines are not executed until specifically
+# called. Hence, in the example below, the FIRST LINE OF
+# EXECUTION is AFTER the closing curly brace "}" of the
+# subroutine.
+#
+#========================================================
+
+#NOTE: This is a subroutine, won't be executed until explicitly called
+mysub()
+{
+	echo "Control is now inside subroutine mysub with arg1 and arg2 equal to: $1 $2"
+}
+
+#NOTE: The following line is where this script first starts executing
+echo "About to call mysub three times..."
+mysub A B
+mysub monster vision
+mysub x y

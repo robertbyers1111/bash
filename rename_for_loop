@@ -1,0 +1,6 @@
+#!/bin/sh -xv
+for XXX in odbc*
+do
+	YYY=`echo $XXX|sed s/odbc/ODBC/`
+	mv $XXX $YYY
+done

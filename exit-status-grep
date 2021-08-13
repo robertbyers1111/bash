@@ -1,0 +1,129 @@
+#!/bin/sh
+
+#   +-------------+
+#---| OLDER DEMOS |-------------------------------------------------------------
+#   +-------------+
+
+#   +-------------+
+#---| check_spell |---
+#   +-------------+
+
+check_spell ()
+{
+  if
+    echo $1 | spell | grep -q $1
+  then
+    echo ERROR: $1 INCORRECT SPELLING \(status $?\)
+  else
+    echo OK: $1 \(status $?\)
+  fi
+}
+
+#   +------+
+#---| MAIN |---
+#   +------+
+
+if [ $# -lt 1 ]; then
+  echo "USAGE: `basename $0` word .."
+  exit 1
+fi
+
+COUNT=0
+while [ $# -gt 0 ]
+do
+  COUNT=`expr $COUNT + 1`
+  check_spell $1
+  shift
+done
+
+#   +-----------------------+
+#---| LATEST DEMOS May 2010 |---------------------------------------------------
+#   +-----------------------+
+
+#   +----------+
+#---| grep who |---
+#   +----------+
+
+  if who | grep -q Gertrude
+  then
+    echo "Yup, Gertrude is logged in"
+  else
+    echo "Nope, Gertrude isn't logged in right now"
+  fi
+
+#   +------------------+
+#---| grep day of week |---
+#   +------------------+
+
+  if date | grep -q "^Mon" ; then
+    echo "Today is Monday"
+  else
+    echo "Today is NOT Monday"
+  fi
+
+#   +--------------------+
+#---| grep file contents |---
+#   +--------------------+
+
+  if grep -q root /etc/passwd ; then
+    echo "OK: root was found in /etc/passwd"
+  else
+    echo "ERROR: root is missing from /etc/passwd"
+  fi
+
+  if grep -q BOGUS /etc/passwd ; then
+    echo "ERROR: BOGUS was found in /etc/passwd"
+  else
+    echo "OK: BOGUS is missing from /etc/passwd"
+  fi
+
+#   +---------------+
+#---| grep variable |---
+#   +---------------+
+
+  SEARCH=abc-def
+
+  ABC=XX.abc-def.XX
+
+  if echo $ABC | grep -q abc-def ; then
+    echo "YES: '$ABC' contains         '$SEARCH'"
+  else
+    echo " NO: '$ABC' does not contain '$SEARCH'"
+  fi
+
+  DEF=XX.ABC-DEF.XX
+
+  if echo $DEF | grep -q abc-def ; then
+    echo "YES: '$DEF' contains         '$SEARCH'"
+  else
+    echo " NO: '$DEF' does not contain '$SEARCH'"
+  fi
+
+#======================================================
+#DEMO grep output of a command, including grep of its stderr
+
+  alias abc=xyz
+
+  if ( alias abc 2>&1 ) | grep -q not ; then
+    echo " NO: alias not set for abc"
+  else
+    echo "YES: alias is set for abc"
+  fi
+
+  if ( alias xyz 2>&1 ) | grep -q not ; then
+    echo " NO: alias not set for xyz"
+  else
+    echo "YES: alias is set for xyz"
+  fi
+
+#======================================================
+#DEMO grep output of a command, including grep of its stderr
+
+  DEF=XX.ABC-DEF.XX
+  SEARCHLIST="ABC-DEF abc-def"
+  for SEARCH in $SEARCHLIST; do
+
+    echo $DEF | grep -q $SEARCH && echo $SEARCH: YES! || echo $SEARCH: no
+
+  done
+

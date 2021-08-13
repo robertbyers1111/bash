@@ -1,0 +1,76 @@
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TL;DR...
+
+    case $1 in -n|nav) echo DashEn or Nav!;; esac
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TL...
+
+From https://stackoverflow.com/questions/2172352/in-bash-how-can-i-check-if-a-string-begins-with-some-value#18558871
+
+I always try to stick with POSIX sh instead of using Bash extensions, since one of the major points of scripting is
+portability (besides connecting programs, not replacing them).
+
+In sh, there is an easy way to check for an "is-prefix" condition.
+
+case $HOST in node*)
+    # Your code here
+esac
+
+Given how old, arcane and crufty sh is (and Bash is not the cure: It's more complicated, less consistent and less
+portable), I'd like to point out a very nice functional aspect: While some syntax elements like case are built-in, the
+resulting constructs are no different than any other job. They can be composed in the same way:
+
+if case $HOST in node*) true;; *) false;; esac; then
+    # Your code here
+fi
+
+Or even shorter
+
+if case $HOST in node*) ;; *) false;; esac; then
+    # Your code here
+fi
+
+Or even shorter (just to present ! as a language element -- but this is bad style now)
+
+if ! case $HOST in node*) false;; esac; then
+    # Your code here
+fi
+
+If you like being explicit, build your own language element:
+
+beginswith() { case $2 in "$1"*) true;; *) false;; esac; }
+
+Isn't this actually quite nice?
+
+if beginswith node "$HOST"; then
+    # Your code here
+fi
+
+And since sh is basically only jobs and string-lists (and internally processes, out of which jobs are composed), we can now
+even do some light functional programming:
+
+beginswith() { case $2 in "$1"*) true;; *) false;; esac; }
+checkresult() { if [ $? = 0 ]; then echo TRUE; else echo FALSE; fi; }
+
+all() {
+    test=$1; shift
+    for i in "$@"; do
+        $test "$i" || return
+    done
+}
+
+all "beginswith x" x xy xyz ; checkresult  # Prints TRUE
+all "beginswith x" x xy abc ; checkresult  # Prints FALSE
+
+This is elegant. Not that I'd advocate using sh for anything serious -- it breaks all too quickly on real world
+requirements (no lambdas, so we must use strings. But nesting function calls with strings is not possible, pipes are not
+possible, etc.)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TL;DR...
+
+    case $1 in -n|nav) echo DashEn or nav!;; esac
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

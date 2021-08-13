@@ -1,0 +1,9 @@
+#!/bin/sh
+
+#NOTE: SPACES SURROUNDING "=" ARE REQUIRED !!
+
+if [ `hostname` = twister ]; then
+  echo You are on twister
+else
+  echo You are not on twister
+fi

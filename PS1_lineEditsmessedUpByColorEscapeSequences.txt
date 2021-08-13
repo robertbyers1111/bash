@@ -1,0 +1,20 @@
+I had the same issue, and I don't think the problem has to do with the TERM variable. In
+fact, I tried changing it to "ansi" myself, and emacs got all screwed up.
+
+You didn't put the value of PS1 in your original post, so I can only assume you're
+having the same issues I was, which was failing to mark the ANSI escape sequences as
+non-printing characters.
+
+Before I had the following value for PS1:
+
+        '\e[0;34m\h:\w [\!]\$\e[0m '
+
+which gave me a nice blue prompt of the following form
+
+        hostname:working-directory [command-number]$
+
+However, I had the same line-wrapping problem you did. The fix was to insert \[ and \]
+around the ANSI escapes so that the shell knows not to include them in the line wrapping
+calculation. This results in the following value for PS1:
+
+        '\[\e[0;34m\]\h:\w [\!]\$\[\e[m\] '

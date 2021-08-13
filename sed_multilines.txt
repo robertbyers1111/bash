@@ -1,0 +1,32 @@
+#!/bin/sh
+
+doit ()
+{
+sed -e '{
+N
+N
+N
+N
+s/.*ixiaChasIp.: 10\.10\.37\.2\([0-9]*\).*ixiaPort..: \([0-9\,]*\).*ixiaPort..: \([0-9\,]*\).\(.*\)..chas.,switchIp.: 10\.10\.34\.\([0-9]*\)/\4  T\5  ixia-\1 \(\2\) \(\3\)=/
+}' | tr = '\n'
+}
+
+cat <<EOF | doit
+
+zzzzzzzzzzzzzzzzzzzzzzzz ixiaChasIp): 10.10.37.22
+zzzzzzzzzzzzzzzzzzzzzzzz ixiaPort1): 1,4,4
+zzzzzzzzzzzzzzzzzzzzzzzz ixiaPort2): 1,4,5
+integrator2/sqa-e100/IRL/LOGS/IRL.0531_051617/(chas1,switchIp): 10.10.34.25
+
+zzzzzzzzzzzzzzzzzzzzzzzz ixiaChasIp): 10.10.37.22
+zzzzzzzzzzzzzzzzzzzzzzzz ixiaPort1): 1,4,4
+zzzzzzzzzzzzzzzzzzzzzzzz ixiaPort2): 1,4,5
+integrator2/sqa-e100/IRL/LOGS/IRL.0531_033907/(chas1,switchIp): 10.10.34.25
+
+zzzzzzzzzzzzzzzzzzzzzzzz ixiaChasIp): 10.10.37.22
+zzzzzzzzzzzzzzzzzzzzzzzz ixiaPort1): 1,4,4
+zzzzzzzzzzzzzzzzzzzzzzzz ixiaPort2): 1,4,5
+integrator2/sqa-e100/IRL/LOGS/IRL.0531_033907/(chas1,switchIp): 10.10.34.25
+
+EOF
+

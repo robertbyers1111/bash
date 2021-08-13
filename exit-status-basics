@@ -1,0 +1,43 @@
+<html>
+<head><title>bourne Shell Exit Status</title></head>
+<body bgcolor="#ABCDEF">
+<pre>
+
+#=============================================
+doGzip1 ()
+{
+  if
+    gzip $1
+  then
+    echo OK: $?
+    echo ..goody!
+  else
+    echo FAILED: $?
+    echo ..bummer
+  fi
+}
+
+#=============================================
+doGzip2 ()
+{
+  gzip $1
+  RETVAL=$?
+  if [ $RETVAL -ne 0 ]; then
+   echo command returned non-zero exit status ($RETVAL)
+  fi
+}
+
+#=============================================
+doGzip3 ()
+{
+  gzip $1
+  if
+   test $? -ne 0 ; then
+   echo command returned non-zero exit status
+  fi
+}
+
+#=============================================
+</pre>
+</body>
+</html>

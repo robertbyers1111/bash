@@ -1,0 +1,118 @@
+
+#   +----------+
+#---| QUESTION |---
+#   +----------+
+
+Is it possible to have two expressions in a bash if statement, using an 'or' operator, in
+which one of the expressions tests the exit status of grep?
+
+For example, I want a script to process all directories in my PATH except for '.' and
+/home/$LOGNAME/bin. I can do it fine with two if statements, but I'd like to combine the two
+tests into a single statement joined by 'or'
+
+#   +----------+
+#---| Answer 1 |---
+#   +----------+
+
+The proper form for your if elif fi block can be like this. You also don't need to use an
+external binary command like grep.
+
+    IFS=:
+
+    for VAR in $PATH; do
+      if [[ $VAR == . ]]; then
+        echo "SKIPPING CURRENT WORKING DIRECTORY \($VAR\)"
+      elif [[ "$VAR" == "/home/$LOGNAME/bin"* ]]; then
+        echo "SKIPPING YOUR OWN bin DIRECTORY \($VAR\)"
+      else
+        echo "processing $VAR"
+      fi
+    done
+
+If you want to do it with one line you could have:
+
+    IFS=:
+
+    for VAR in $PATH; do
+      if [[ $VAR != . && "$VAR" != "/home/$LOGNAME/bin"* ]]; then
+        echo "processing $VAR"
+      else
+        echo "SKIPPING CURRENT WORKING DIRECTORY OR YOUR OWN bin DIRECTORY \($VAR\)"
+      fi
+    done
+
+Or
+
+    IFS=:
+
+    for VAR in $PATH; do
+      if [[ $VAR == . || "$VAR" == "/home/$LOGNAME/bin"* ]]; then
+        echo "SKIPPING CURRENT WORKING DIRECTORY OR YOUR OWN bin DIRECTORY \($VAR\)"
+      else
+        echo "processing $VAR"    
+      fi
+    done
+
+The else block is optional.
+    
+#   +----------+
+#---| Answer 2 |---
+#   +----------+
+
+It is possible, but totally unnecessary. Just let if evaluate the exit status of grep
+directly:
+
+    if echo "$var" | grep -q "$HOME/bin" || echo "$var" | grep -q '^\.$'; then
+      ...
+    fi
+
+or
+
+    if echo "$var" | grep -q "^$HOME"'/bin$\|^\.$'; then ...
+
+#   +----------+
+#---| Answer 3 |---
+#   +----------+
+
+There are several ways to do this. Using your if construct, it could look something like
+this (although there are a couple other equally valid ways to do it):
+
+    if [[ "${VAR}" == "." ]] || grep -q /home/${LOGNAME}/bin <<< "${VAR}"
+
+You might also consider something like this, which I think makes it a bit clearer what
+you're doing, and might even be less typing (it also dispenses with calling an external
+program, so will be slightly more efficient):
+
+    case "${VAR}" in
+      .|*/home/${LOGNAME}/bin*) .... ;;
+      *) .... ;;
+    esac
+
+
+#   +-----------+
+#---| GOOD IDEA |---------------------------------------------------------------
+#   +-----------+
+
+Use case instead of if (!)
+
+    case "${VAR}" in
+      .|*/home/${LOGNAME}/bin*) .... ;;
+      *) .... ;;
+    esac
+
+#   +------+
+#---| BEST |--------------------------------------------------------------------
+#   +------+
+
+My fav solution, using a single if line
+
+    IFS=:
+
+    for VAR in $PATH; do
+      if [[ $VAR == . || "$VAR" == "/home/$LOGNAME/bin"* ]]; then
+        echo "SKIPPING CURRENT WORKING DIRECTORY OR YOUR OWN bin DIRECTORY \($VAR\)"
+      else
+        echo "processing $VAR"    
+      fi
+    done
+

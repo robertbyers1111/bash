@@ -1,0 +1,45 @@
+=========================================================================
+
+The following email describes a way to "feed" commands to telnet
+(and also ftp). Doesn't have lots of features, and I get sporadic
+results - seems to be very sensitive as to what device you're
+ftp-ing or telnet-ing to (e.g., router, Solaris, SunOS, etc)
+But it can be very useful when you want to run just a couple of
+commands and get out quickly.
+
+Anything more advanced is a candidate for Expect.
+
+=========================================================================
+
+From: "Chen, Daniel [BL10:DS69:EXCH]" <dchen@americasm06.nt.com>
+To: "Byers, Robert [BL10:DS69:EXCH]" <byersr@americasm06.nt.com>
+Subject: script for Telnet and FTP
+Date: Wed, 8 Sep 1999 13:04:49 -0400 
+
+Bob,
+
+The following works:
+
+mogul% (echo Manager; echo ""; echo cd 2:;echo dir)|ftp fatboy
+Name (fatboy:dchen):
+ Volume - drive 2:
+ Directory of 2:
+
+File Name             Size    Date     Day      Time
+------------------------------------------------------
+bn.exe             5734326  12/18/98  Fri.    17:38:14
+ti.cfg                 132  12/18/98  Fri.    17:40:41
+debug.al             12319  12/18/98  Fri.    17:41:11
+jaxbcn.log          415124  12/21/98  Mon.    10:58:27
+config                2860  06/07/99  Mon.    15:49:07
+
+ 8388608 bytes - Total size
+ 2223643 bytes - Available free space
+ 2220973 bytes - Contiguous free space
+      
+or
+
+cat filename | ftp fatboy
+
+
+Mogul doesn't seem to like the method for Telnet

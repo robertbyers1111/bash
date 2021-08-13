@@ -1,0 +1,35 @@
+#!/bin/sh
+
+#=========================================================
+# DEMO: "exit-status-ping"
+#
+# Tests whether a host is responding to pings .. Takes
+# appropriate action based on the ping success/failure.
+#
+# Other features of this script:
+# 1. Uses a subroutine
+# 2. Assigns a default timeout value if the 2nd (optional)
+#    argument to the subroutine was not supplied
+#=========================================================
+
+pingproc()
+{
+ HOST=$1
+ [ -z "$2" ] && TIMEOUT=3 || TIMEOUT=$2
+
+ if ping $HOST $TIMEOUT > /dev/null
+ then
+	echo ping $HOST $TIMEOUT OK, status = $?
+ else
+	echo ping $HOST $TIMEOUT FAILED, status = $?
+ fi
+}
+
+#=========================================================
+# * * *   M A I N   S C R I P T   * * *
+
+#Call the subroutine without 2nd argument. Default timeout will be used
+pingproc 132.245.156.1
+
+#Call the subrouteine with 2nd argument. Default timeout will NOT be used
+pingproc 172.17.12.244 10

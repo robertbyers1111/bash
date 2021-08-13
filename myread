@@ -1,0 +1,14 @@
+#!/bin/sh
+
+echo "\nPlease press ENTER to continue, or 'q' to quit.."
+read ABC
+
+# BEWARE: ALL SPACES REQUIRED IN NEXT 'IF' STATEMENT
+if [ "$ABC" = "" ]; then
+  echo Thank you for pressing ENTER
+elif [ "$ABC" = "q" ]; then
+  echo Quitting..
+  exit
+else
+  echo You typed $ABC
+fi

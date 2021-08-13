@@ -1,0 +1,57 @@
+#!/bin/sh
+
+# Program Name : Serial-Numbers
+# Author       : Tim Hoefling
+# Date         : 6/11/1998
+# Company      : Lucent Technogies
+#
+# This is a script to retreive the slot configuration and serial numbers from 
+# Bay Networks System 5000, Centillion 100, and Baystacks
+#
+# Modifed 12/7/98 : sub program to retrieve ONLY Supervisor serial number 
+# of 5000 BH Renamed program to "sup-firmware"
+#
+# by Craig Miller
+# Nortel Networks
+#
+
+# Device is IP address or DNS name of 5000BH
+
+DEVICE=$1
+
+if [ -z "$DEVICE" ]
+then
+	echo "Usage: sup-firmware device"
+else
+
+
+SNMP_BIN_DIR="/opt/OV/bin"
+COMMUNITY="public"
+BASE_MIB="1.3.6.1.4.1"
+SUPERVISORY_SOFT_OID="45.1.6.3.5.1.1.7.1.1.0."
+
+
+# Check to see if device is alive
+
+ALIVE=`ping $DEVICE | grep "alive"`
+if [ -z "$ALIVE" ]
+then
+	printf "\nDevice timed out\n\n"
+	exit
+fi
+
+# Get SNMP value of Supervisor Software
+# snmpget fails for some reason, so we use a snmpwalk command and filter out
+# the extra stuff it returns
+
+
+SUPERVISORY_SOFT=`$SNMP_BIN_DIR/snmpwalk -c $COMMUNITY  $DEVICE $BASE_MIB.$SUPERVISORY_SOFT_OID | grep 7.1.1.0.1 | cut -f 3 -d ":" `
+
+# Tell the user what the version is
+
+echo  $DEVICE " Supervisor Module Firmware version is:"$SUPERVISORY_SOFT
+
+
+fi
+
+

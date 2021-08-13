@@ -1,0 +1,56 @@
+#!/bin/sh
+
+ECHON()
+{
+  if [ -x /usr/ucb/echo ]
+    then
+    /usr/ucb/echo -n "$1"
+  else
+    echo "$1" \\c
+  fi
+}
+
+AskYesNo()
+{
+  prmt1="$1? (y/n)"
+  yn1="$2"
+
+  case $yn1 in
+    n) prmt1="$prmt1[n]"
+    dflt1=n ;;
+    y) prmt1="$prmt1[y]"
+    dflt1=y ;;
+  esac
+  prmt1="$prmt1->"
+
+  answer=""
+  while [ "$answer" = "" ]
+  do
+    ECHON "$prmt1"
+    read a1
+    case "$a1" in
+      n|N|no|NO|No)  answer=n
+      ;; 
+      y|Y|yes|Yes|YES)  answer=y
+      ;; 
+      "")         if [ "$dflt1" = "" ]; then
+        echo "You must specify either y(es) or n(o) ."
+      else
+        answer=$dflt1
+
+fi 
+      ;;
+      *)          echo "You must specify either y(es) or n(o) ."
+      ;; 
+    esac
+  done
+ 
+  unset prmt1 yn1 dflt1 a1
+}
+
+AskYesNo
+if [ $answer = y ] ; then 
+	echo You answered in the affirmative
+else
+	echo You declined
+fi

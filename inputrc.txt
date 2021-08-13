@@ -1,0 +1,185 @@
+
+#   +---------------------------------------------+
+#---| This complicated version I found on the net |---
+#   +---------------------------------------------+
+
+#$if Bash
+set bell-style none
+set expand-tilde off
+set completion-ignore-case on
+
+set convert-meta off
+set input-meta on
+set output-meta on
+
+# vim mode
+#set editing-mode vi
+
+$if mode=vi
+  set keymap vi-command
+
+  set keymap vi-insert
+
+  "\C-b": backward-char
+  "\eb": backward-word
+  "\e<": beginning-of-history
+  "\C-a": beginning-of-line
+  "\C-xe": call-last-kbd-macro
+  "\ec": capitalize-word
+  "\C-]": character-search
+  "\e\C-]": character-search-backward
+  "\C-l": clear-screen
+  "\e\e": complete
+  "\e!": complete-command
+  "\e/": complete-filename
+  "\e@": complete-hostname
+  "\e{": complete-into-braces
+  "\e~": complete-username
+  "\e$": complete-variable
+  "\C-d": delete-char
+  "\e\\": delete-horizontal-space
+  "\e\C-i": dynamic-complete-history
+  "\C-x\C-e": edit-and-execute-command
+  "\C-x)": end-kbd-macro
+  "\e>": end-of-history
+  "\C-e": end-of-line
+  "\C-x\C-x": exchange-point-and-mark
+  "\C-f": forward-char
+  "\ef": forward-word
+  "\C-x*": glob-expand-word
+  "\C-xg": glob-list-expansions
+  "\e^": history-expand-line
+  "\e#": insert-comment
+  "\e*": insert-completions
+  "\C-k": kill-line
+  "\ed": kill-word
+  "\C-n": next-history
+  "\en": non-incremental-forward-search-history
+  "\ep": non-incremental-reverse-search-history
+  "\C-o": operate-and-get-next
+  "\C-x!": possible-command-completions
+  "\e=": possible-completions
+  "\e?": possible-completions
+  "\C-x/": possible-filename-completions
+  "\C-x@": possible-hostname-completions
+  "\C-x~": possible-username-completions
+  "\C-x$": possible-variable-completions
+  "\C-p": previous-history
+  "\C-x\C-r": re-read-init-file
+  "\e\C-r": revert-line
+  "\C-@": set-mark
+  "\e ": set-mark
+  "\e\C-e": shell-expand-line
+  "\C-x(": start-kbd-macro
+  "\e&": tilde-expand
+  "\et": transpose-words
+  "\C-x\C-u": undo
+  "\C-_": undo
+  "\e.": yank-last-arg
+  "\e_": yank-last-arg
+  "\e\C-y": yank-nth-arg
+  "\ey": yank-pop
+$endif
+
+# kill word
+#"\eh" : backward-kill-word
+#"\ed" : kill-word
+
+# default to re-read .inputrc
+"\C-x\C-r": re-read-init-file
+"\C-xr": re-read-init-file
+
+# grep prefix
+"\C-g": ""
+# grep -r "" ./ # and avoid svn/git
+"\C-g\C-r": "\C-ugrep -I -r \"\" ./|grep -v \"\\.svn\"|grep -v \"\\.git\"\C-a\ef\ef\ef\C-f\C-f"
+"\C-gr": "\C-ugrep -I -r \"\" ./|grep -v \"\\.svn\"|grep -v \"\\.git\"\C-a\ef\ef\ef\C-f\C-f"
+"\er": "\C-ugrep -I -r \"\" ./|grep -v \"\\.svn\"|grep -v \"\\.git\"\C-a\ef\ef\ef\C-f\C-f"
+# grep "" *
+"\C-g\C-g": "\C-ugrep -I *\C-b\C-b \"\"\C-b"
+"\C-gg": "\C-ugrep -I *\C-b\C-b \"\"\C-b"
+"\eg": "\C-ugrep -I *\C-b\C-b \"\"\C-b"
+# find ./
+"\C-g\C-f": "\C-ufind ./ -name \"**\" 2>/dev/null|grep -v \"\\.svn\"|grep -v \"\\.git\"\C-a\ef\ef\C-f\C-f\C-f"
+"\C-gf": "\C-ufind ./ -name \"**\" 2>/dev/null|grep -v \"\\.svn\"|grep -v \"\\.git\"\C-a\ef\ef\C-f\C-f\C-f"
+# grep uniq
+"\C-g\C-u": "\C-ugrep -I -l -r \"\" *|grep -v \"\\.svn\"|grep -v \"\\.git\"|cut -d: -f1|uniq\C-a\ef\ef\ef\ef\C-f\C-f"
+"\C-gu": "\C-ugrep -I -l -r \"\" *|grep -v \"\\.svn\"|grep -v \"\\.git\"|cut -d: -f1|uniq\C-a\ef\ef\ef\ef\C-f\C-f"
+# grep uniq and open with vi
+"\C-g\C-v": "\C-ugrep -I -l -r \"\" *|grep -v \"\\.svn\"|grep -v \"\\.git\"|cut -d: -f1|uniq)\C-avi $(\ef\ef\ef\ef\C-f\C-f"
+"\C-gv": "\C-ugrep -I -l -r \"\" *|grep -v \"\\.svn\"|grep -v \"\\.git\"|cut -d: -f1|uniq)\C-avi $(\ef\ef\ef\ef\C-f\C-f"
+
+# Quote/Bracket
+"\e\"": "\eb\"\ef\""
+"\e\'": "\eb\'\ef\'"
+"\e\`": "\eb\`\ef\`"
+"\e\]": "\eb\[\ef\]"
+"\e\}": "\eb\{\ef\}"
+"\e\)": "\eb\(\ef\)"
+
+# Variable ${}
+#"\C-q": ""
+#"\C-q4": "${}\C-b"
+#"\C-q$": "${}\C-b"
+#"\eq": "${}\C-b"
+"\eq": "${}\C-b"
+
+# less
+#"\el":"\C-e | less\C-m"
+
+# ls
+"\el":"\C-uls\C-m"
+"\es":"\C-uls -ltr\C-m"
+
+# cd
+#"\eu":"\C-u\C-e\C-ucd ../\C-mls\C-m"
+"\eu":"\C-ucd ../;ls\C-m"
+"\e~-":"\C-ucd -;ls\C-m"
+
+# du
+"\ed": "\C-ufor a in *;do du -s -m "$a";done\C-m"
+
+# /dev/null
+"\e;": ">& /dev/null\C-m"
+"\e:": "2>&1 |tee log\C-m"
+
+# disable C-t
+"\C-t": ""
+
+# xargs
+"\ex": "\C-ufind . -name \"**\" -print0 2>/dev/null| xargs -0\C-a\ef\ef\C-f\C-f\C-f"
+
+# ps
+"\ep": "\C-ups -U $USER\C-m"
+
+#   +----------------------------+
+#---| This is my current version |---
+#   +----------------------------+
+
+$if Bash
+  Space: magic-space
+  set mark-directories on
+  set mark-symlinked-directories on
+  set completion-ignore-case off
+  set show-all-if-ambiguous on
+
+  #
+  #-- Maybe these?
+  #
+  # insert-completions
+  # glob-expand-word
+  # glob-complete-word
+  # glob-list-expansions
+  #
+  # Control-x: shell-expand-line
+  # Control-x: history-expand-line
+  # Control-x: alias-expand-line
+  # Control-x: history-and-alias-expand-line
+  #
+  #-- This is working, no need to set it here?
+  #  Control-x: glob-expand-word
+  #
+  #-- See also my inputrc example in public_html/sh
+
+$endif
+

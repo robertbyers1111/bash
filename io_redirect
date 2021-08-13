@@ -1,0 +1,45 @@
+#!/bin/sh
+
+#=========================================================================
+#
+#DEMO: I/O Redirection in UNIX Shell Scripts
+#
+# |		Sends ("pipes") stdout of one command to input of another
+# >		Redirects stdout to a file (but errors still go to screen)
+# 2> /dev/null	Send only stderr to the bit bucket
+# 2>&1		Redirects stderr to file descriptor 1 (stdout)
+# <<STRING	Use subsequent lines from script file as input to the program
+#		(terminated by "STRING")
+
+#=========================================================================
+#NOTE: This is the best way to ignore stderr..
+
+    alias abcdefedcba 2> /dev/null
+
+#NOTE: This successfully sends stderr to /dev/null
+
+    alias abcdefedcba > /dev/null 2>&1
+
+#.. however this does not:
+
+    alias abcdefedcba 2>&1 > /dev/null   <---- FAILS
+
+#=========================================================================
+#NOTE: Sending stdout AND stderr to "tee"
+
+        /tmp/y 2>&1 | tee /tmp/z 
+
+#=========================================================================
+#NOTE: Sending stdout AND stderr to a file
+
+	grep ABC /tmp/nonsense > /tmp/z 2>&1
+
+#=========================================================================
+#NOTE: Hereis document
+
+cat << EOF
+
+This is a test of the 'hereis' operator
+	This is another line in the test
+
+EOF

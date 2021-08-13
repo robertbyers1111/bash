@@ -1,0 +1,70 @@
+#!/bin/sh
+#========================================================================
+#
+#      SCRIPT:	is-on-path.sh
+#       DESCR:	Checks if a command is found on your path
+#   KNOWN BUG:	Technique 1 fails if command has a "." in its name
+#
+#========================================================================
+# TECHNIQUE 1: Try to compensate as follows:
+#
+#	1. If cmd is on path, use it
+#	2. Else, user supplies an alternative in $3. If it exists, use it
+#
+# Syntax:	set_cmd	VARNAME	cmd	altpath
+#
+# Example:	set_cmd	PING	ping	/usr/sbin/ping
+#
+#========================================================================
+set_cmd ()
+{
+  CMD=`eval echo "$2"`
+  if type $CMD > /dev/null
+  then
+    :
+  else
+    CMD=`eval echo "$3"`
+    if type $CMD > /dev/null
+    then
+      :
+    else
+      echo ERROR: Command not found: $2
+      exit 1
+    fi
+  fi
+  VARNAME=$1
+  eval "$VARNAME"=$CMD
+}
+#=========================================================
+# TECHNIQUE 2: Just indicate whether the command was found
+is_on_path()
+{
+ CMD=$1
+
+ if type $CMD > /dev/null
+ then
+	echo "\t$CMD found\texit status = $?"
+ else
+	echo "\t$CMD NOT found\texit status = $?"
+ fi
+}
+
+#=========================================================
+#               M A I N   S C R I P T
+
+echo ""
+
+is_on_path ping
+is_on_path pong
+
+echo ""
+
+set_cmd PING ping /usr/sbin/ping
+echo "\tTest 1: Using PING=$PING"
+
+PATH=`echo $PATH|sed 's/\/usr\/sbin://'`
+
+set_cmd PING ping /usr/sbin/ping
+echo "\tTest 2: Using PING=$PING"
+
+echo ""

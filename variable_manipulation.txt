@@ -1,0 +1,28 @@
+
+-------------------------------
+Variable Manipulation Notes
+-------------------------------
+
+The following will insert "**" between the strings
+
+    var=${var1}**${var2}**${var3}
+or
+    var=$var1**$var2**$var3
+or
+    var="$var1"**"$var2"**"$var3"
+
+The following concatenate the strings using space:
+
+    var=${var1} ${var2} ${var3}
+or
+    var="$var1" "$var2" "$var3"
+
+!!!Note: While concatenating strings via space, avoid using
+
+    var=$var1 $var2 $var3          #WRONG!!!
+
+Here, the shell assumes $var2 and $var3 as commands and tries to execute
+them, resulting in an error. Instead, use this...
+
+    var=${var1} ${var2} ${var3}    #OK!!!
+

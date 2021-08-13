@@ -1,0 +1,10 @@
+
+One big difference between [..] and [[..]] is the latter does not expand
+paths (with ~'s for example), nor expands wildcards (e.g., '*').
+
+that means we can do tricks like this..
+
+One of the features of [[ is pattern matching:
+
+$ [[ $filename = *.png ]] && echo "$filename looks like a PNG file"
+

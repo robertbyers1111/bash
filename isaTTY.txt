@@ -1,0 +1,72 @@
+#!/bin/bash
+
+#-- To determine if script is running from cron (more specifically, not from a TTY)..
+
+    tty -s; [[ $? -eq 0 ]] && VERBOSE=1 || VERBOSE=
+
+#-- and use it..
+
+    [ $VERBOSE ] && echo Not in cron || echo in cron
+
+#-----------------------------------------------------------------------
+# 
+# From..
+# http://stackoverflow.com/questions/911168/how-to-detect-if-my-shell-script-is-running-through-a-pipe
+# 
+# There is no foolproof way to determine if STDIN, STDOUT, or STDERR are being piped to/from your script, primarily because of programs like ssh.
+# Things that "normally" work
+# 
+# For example, the following bash solution works correctly in an interactive shell:
+# 
+# [[ -t 1 ]] && \
+#     echo 'STDOUT is attached to TTY'
+# 
+# [[ -p /dev/stdout ]] && \
+#     echo 'STDOUT is attached to a pipe'
+# 
+# [[ ! -t 1 && ! -p /dev/stdout ]] && \
+#     echo 'STDOUT is attached to a redirection'
+# 
+# But they don't always work
+# 
+# However, when executing this command as a non-TTY ssh command, STD streams always looks like they are being piped. To demonstrate this, using STDIN because it's easier:
+# 
+# # CORRECT: Forced-tty mode correctly reports '1', which represents
+# # no pipe.
+# ssh -t localhost '[[ -p /dev/stdin ]]; echo ${?}'
+# 
+# # CORRECT: Issuing a piped command in forced-tty mode correctly
+# # reports '0', which represents a pipe.
+# ssh -t localhost 'echo hi | [[ -p /dev/stdin ]]; echo ${?}'
+# 
+# # INCORRECT: Non-tty mode reports '0', which represents a pipe,
+# # even though one isn't specified here.
+# ssh -T localhost '[[ -p /dev/stdin ]]; echo ${?}'
+# 
+# Why it matters
+# 
+# This is a pretty big deal, because it implies that there is no way for a bash script to tell whether a non-tty ssh command is being piped or not. Note that this unfortunate behavior was introduced when recent versions of ssh started using pipes for non-TTY STDIO. Prior versions used sockets, which COULD be differentiated from within bash by using [[ -S ]].
+# When it matters
+# 
+# This limitation normally causes problems when you want to write a bash script that has behavior similar to a compiled utility, such as cat. For example, cat allows the following flexible behavior in handling various input sources simultaneously, and is smart enough to determine whether it is receiving piped input regardless of whether non-TTY or forced-TTY ssh is being used:
+# 
+# ssh -t localhost 'echo piped | cat - <( echo substituted )'
+# ssh -T localhost 'echo piped | cat - <( echo substituted )'
+# 
+# You can only do something like that if you can reliably determine if pipes are involved or not. Otherwise, executing a command that reads STDIN when no input is available from either pipes or redirection will result in the script hanging and waiting for STDIN input.
+# Other things that don't work
+# 
+# In trying to solve this problem, I've looked at several techniques that fail to solve the problem, including ones that involve:
+# 
+#     examining SSH environment variables
+#     using stat on /dev/stdin file descriptors
+#     examining interactive mode via [[ "${-}" =~ 'i' ]]
+#     examining tty status via tty and tty -s
+#     examining ssh status via [[ "$(ps -o comm= -p $PPID)" =~ 'sshd' ]]
+# 
+# Note that if you are using an OS that supports the /proc virtual filesystem, you might have luck following the symbolic links for STDIO to determine whether a pipe is being used or not. However, /proc is not a cross-platform, POSIX-compatible solution.
+# 
+# I'm extremely interesting in solving this problem, so please let me know if you think of any other technique that might work, preferably POSIX-based solutions that work on both Linux and BSD.
+# 
+#-----------------------------------------------------------------------
+

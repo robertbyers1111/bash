@@ -1,0 +1,65 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+To display function names defined in your current bash session...
+    declare -F
+To display a function with its body...
+    declare -f [func_name]
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+From...
+http://www.tldp.org/LDP/abs/html/functions.html
+
+count_lines_in_etc_passwd()
+{
+
+  [[ -r /etc/passwd ]] && REPLY=$(echo $(wc -l < /etc/passwd))
+
+  #  If /etc/passwd is readable, set REPLY to line count.
+  #  Returns both a parameter value and status information.
+  #  The 'echo' seems unnecessary, but . . .
+  #+ it removes excess whitespace from the output.
+}
+
+if count_lines_in_etc_passwd
+then
+  echo "There are $REPLY lines in /etc/passwd."
+else
+  echo "Cannot count lines in /etc/passwd."
+fi  
+
+--------------------------------------------------------------------------------
+
+A function may be compacted into a single line:
+
+    fun () { echo This is a function ; echo ; }
+
+.. note, however, the 2nd semicolon is CRUCIAL!!! 
+
+
+
+--------------------------------------------------------------------------------
+
+Function names can take strange forms.
+
+  _(){ for i in {1..10}; do echo -n "$FUNCNAME"; done; echo; }
+# ^^^         No space between function name and parentheses.
+#             This doesn't always work. Why not?
+
+# Now, let's invoke the function.
+  _         # __________
+#             ^^^^^^^^^^   10 underscores (10 x function name)!  
+# A "naked" underscore is an acceptable function name.
+
+
+# In fact, a colon is likewise an acceptable function name.
+
+:(){ echo ":"; }; :
+
+# Of what use is this?
+# It's a devious way to obfuscate the code in a script.
+See also Example A-56
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+To display function names defined in your current bash session...
+    declare -F
+To display a function with its body...
+    declare -f [func_name]
